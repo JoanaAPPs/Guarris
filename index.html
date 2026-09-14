@@ -267,10 +267,7 @@
             border-radius: 16px; padding: 20px; width: 85%; max-width: 380px;
             display: flex; flex-direction: column; gap: 10px;
         }
-<!-- Boton carga masiva -->
-<button class="btn" style="background-color: var(--accent-self); margin-top: 10px;" onclick="importAllTasks()">
-    🚀 Cargar todas las tareas nuevas de golpe
-</button>
+
         footer { text-align: center; font-size: 0.7rem; color: var(--text-dim); margin-top: 10px; }
     </style>
 </head>
@@ -351,11 +348,16 @@
 
     <!-- Sección de Añadir y Gestionar Tareas -->
     <div class="add-task-card">
-        <div style="display: flex; gap: 8px; justify-content: center;">
+        <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
             <div class="add-task-toggle" onclick="toggleAddForm()">➕ Añadir tarea</div>
             <span style="color: var(--border);">|</span>
             <div class="add-task-toggle" style="color: var(--accent-self);" onclick="openManagerModal()">📋 Abrir Listado General</div>
         </div>
+
+        <!-- Botón Carga Masiva -->
+        <button class="btn" style="background-color: var(--accent-self); margin-top: 12px; font-size: 0.85rem; padding: 10px;" onclick="importAllTasks()">
+            🚀 Cargar todas las tareas nuevas de golpe
+        </button>
 
         <div class="add-task-form" id="add-form">
             <input type="text" id="new-title" placeholder="Título de la tarea" />
@@ -867,7 +869,9 @@
         const isLight = document.body.classList.contains('light-theme');
         document.getElementById('theme-icon').innerText = isLight ? '☀️' : '🌙';
     };
-window.importAllTasks = async function() {
+
+    /* Función de Carga Masiva */
+    window.importAllTasks = async function() {
         const newTasksList = [
             // Hogar y Rutina
             { title: "🛏️ Cambiar sábanas", desc: "Quita las sábanas usadas de la cama y coloca un juego limpio.", minutes: 15, cat: "Hogar y Rutina", mode: "heavy", lastCompleted: null },
@@ -904,7 +908,6 @@ window.importAllTasks = async function() {
             }
         }
     };
-    
 </script>
 </body>
 </html>
