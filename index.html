@@ -267,7 +267,10 @@
             border-radius: 16px; padding: 20px; width: 85%; max-width: 380px;
             display: flex; flex-direction: column; gap: 10px;
         }
-
+<!-- Boton carga masiva -->
+<button class="btn" style="background-color: var(--accent-self); margin-top: 10px;" onclick="importAllTasks()">
+    🚀 Cargar todas las tareas nuevas de golpe
+</button>
         footer { text-align: center; font-size: 0.7rem; color: var(--text-dim); margin-top: 10px; }
     </style>
 </head>
@@ -864,6 +867,44 @@
         const isLight = document.body.classList.contains('light-theme');
         document.getElementById('theme-icon').innerText = isLight ? '☀️' : '🌙';
     };
+window.importAllTasks = async function() {
+        const newTasksList = [
+            // Hogar y Rutina
+            { title: "🛏️ Cambiar sábanas", desc: "Quita las sábanas usadas de la cama y coloca un juego limpio.", minutes: 15, cat: "Hogar y Rutina", mode: "heavy", lastCompleted: null },
+            { title: "🧺 Cambiar toallas", desc: "Sustituye las toallas del baño por un juego limpio y lleva las usadas a lavar.", minutes: 3, cat: "Hogar y Rutina", mode: "micro", lastCompleted: null },
+            { title: "🔌 Limpiar interruptores", desc: "Pasa un trapo húmedo por los interruptores y enchufes de la casa.", minutes: 5, cat: "Hogar y Rutina", mode: "micro", lastCompleted: null },
+            { title: "🤖 Pasar el Roomba por la cocina", desc: "Despeja el suelo de la cocina y pon a funcionar el aspirador robot.", minutes: 2, cat: "Hogar y Rutina", mode: "micro", lastCompleted: null },
+            { title: "🤖 Pasar el Roomba por la habitación grande", desc: "Despeja el suelo del dormitorio principal y activa el Roomba.", minutes: 2, cat: "Hogar y Rutina", mode: "micro", lastCompleted: null },
+            { title: "🤖 Pasar el Roomba por la habitación pequeña", desc: "Recoge lo que haya por el suelo de la habitación pequeña y enciende el Roomba.", minutes: 2, cat: "Hogar y Rutina", mode: "micro", lastCompleted: null },
+            { title: "🤖 Pasar el Roomba por el lavabo", desc: "Levanta las alfombrillas del baño y pon a aspirar el Roomba.", minutes: 2, cat: "Hogar y Rutina", mode: "micro", lastCompleted: null },
+            { title: "🤖 Pasar el Roomba por el pasillo", desc: "Deja el pasillo despejado de zapatos o bultos y pasa el Roomba.", minutes: 2, cat: "Hogar y Rutina", mode: "micro", lastCompleted: null },
+            { title: "🪴 Limpiar las mesas de la terraza", desc: "Pasa un trapo húmedo con limpiador por las superficies de las mesas exteriores.", minutes: 5, cat: "Hogar y Rutina", mode: "micro", lastCompleted: null },
+            { title: "🧹 Limpiar los cojines de la terraza", desc: "Sacude el polvo y limpia las manchas superficiales de los cojines exteriores.", minutes: 5, cat: "Hogar y Rutina", mode: "micro", lastCompleted: null },
+            { title: "🧽 Limpieza profunda de la terraza", desc: "Barre, friega el suelo a fondo y limpia barandillas y muebles exteriores.", minutes: 30, cat: "Hogar y Rutina", mode: "heavy", lastCompleted: null },
+            { title: "🪟 Limpiar cristales de 1 habitación", desc: "Limpia por dentro y por fuera los cristales de las ventanas de un cuarto.", minutes: 15, cat: "Hogar y Rutina", mode: "heavy", lastCompleted: null },
+            { title: "🚪 Limpiar el paso de puerta corredera de 1 habitación", desc: "Aspira y pasa un trapo por los raíles de la puerta corredera.", minutes: 5, cat: "Hogar y Rutina", mode: "micro", lastCompleted: null },
+            { title: "🌶️ Revisar caducidad de especias", desc: "Comprueba los botes de especias y tira las que estén caducadas o hayan perdido aroma.", minutes: 5, cat: "Hogar y Rutina", mode: "micro", lastCompleted: null },
+            { title: "🥫 Revisar despensa", desc: "Ordena los estantes y comprueba las fechas de caducidad de latas y paquetes.", minutes: 15, cat: "Hogar y Rutina", mode: "heavy", lastCompleted: null },
+            { title: "🧊 Tirar 3 cosas de la nevera", desc: "Revisa los estantes del frigorífico y desecha 3 productos caducados o en mal estado.", minutes: 2, cat: "Hogar y Rutina", mode: "micro", lastCompleted: null },
+            { title: "📦 Tirar 3 cosas de la despensa", desc: "Localiza y tira 3 envases vacíos, caducados o abiertos desde hace mucho.", minutes: 2, cat: "Hogar y Rutina", mode: "micro", lastCompleted: null },
+
+            // Productividad y Enfoque
+            { title: "📲 Añadir tareas a la app", desc: "Registra las nuevas tareas pendientes dentro de No more Guarris.", minutes: 5, cat: "Productividad y Enfoque", mode: "micro", lastCompleted: null }
+        ];
+
+        if (confirm(`¿Quieres importar ${newTasksList.length} tareas nuevas a tu base de datos?`)) {
+            try {
+                for (const task of newTasksList) {
+                    await addDoc(collection(db, "tasks"), task);
+                }
+                alert("¡Todas las tareas han sido subidas con éxito a Firebase!");
+            } catch (error) {
+                console.error("Error al importar las tareas:", error);
+                alert("Hubo un error al guardar las tareas. Revisa la consola.");
+            }
+        }
+    };
+    
 </script>
 </body>
 </html>
