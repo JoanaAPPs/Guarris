@@ -1,0 +1,883 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oshikan - Tareas y Hábitos</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --accent: #10b981;
+            --accent-heavy: #f59e0b;
+            --accent-self: #3b82f6;
+            --text: #f8fafc;
+            --text-dim: #94a3b8;
+            --danger: #ef4444;
+            --border: #334155;
+            --input-bg: #0f172a;
+            --badge-bg: rgba(16, 185, 129, 0.15);
+        }
+
+        body.light-theme {
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --accent: #059669;
+            --accent-heavy: #d97706;
+            --accent-self: #2563eb;
+            --text: #0f172a;
+            --text-dim: #64748b;
+            --danger: #dc2626;
+            --border: #e2e8f0;
+            --input-bg: #f1f5f9;
+            --badge-bg: rgba(5, 150, 105, 0.12);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 16px 16px 40px 16px;
+            display: flex;
+            justify-content: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 0;
+        }
+
+        .header-titles h1 { font-size: 1.5rem; margin: 0; }
+        .header-titles p { color: var(--text-dim); font-size: 0.75rem; margin: 2px 0 0 0; }
+
+        .theme-toggle-btn {
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Banner Dinámico de Frases / Trucos */
+        .tip-banner {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(16, 185, 129, 0.15));
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 10px 14px;
+            min-height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text);
+            transition: opacity 0.4s ease-in-out;
+            position: relative;
+        }
+        .tip-banner.fade-out { opacity: 0; }
+
+        .sync-bar {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.8rem;
+        }
+
+        .sync-status { display: flex; align-items: center; gap: 8px; font-weight: 500; }
+        .sync-dot {
+            width: 10px; height: 10px; border-radius: 50%;
+            background-color: #eab308; box-shadow: 0 0 8px #eab308;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .sync-dot.connected { background-color: #10b981; box-shadow: 0 0 8px #10b981; }
+        .sync-dot.error { background-color: #ef4444; box-shadow: 0 0 8px #ef4444; }
+
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .stat-card {
+            background-color: var(--card); border: 1px solid var(--border);
+            padding: 12px; border-radius: 12px; text-align: center;
+        }
+        .stat-value { font-size: 1.4rem; font-weight: bold; color: var(--accent); }
+        .stat-label { font-size: 0.75rem; color: var(--text-dim); }
+
+        .mode-selector {
+            background-color: var(--card); padding: 12px;
+            border-radius: 16px; border: 1px solid var(--border); text-align: center;
+        }
+        .mode-title { font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; }
+        .mode-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+
+        .btn-mode {
+            background-color: var(--input-bg); color: var(--text);
+            border: 1px solid var(--border); padding: 8px 4px;
+            border-radius: 8px; font-size: 0.75rem; font-weight: 600; cursor: pointer;
+        }
+        .btn-mode.active-micro { background-color: var(--accent); color: #ffffff; border-color: var(--accent); }
+        .btn-mode.active-heavy { background-color: var(--accent-heavy); color: #ffffff; border-color: var(--accent-heavy); }
+
+        .action-card {
+            background-color: var(--card); padding: 20px;
+            border-radius: 16px; border: 1px solid var(--border);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .badge-container { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+        .badge {
+            background: var(--badge-bg); color: var(--accent);
+            padding: 4px 8px; border-radius: 6px; font-size: 0.8rem; font-weight: 600;
+        }
+        .badge-category { background: rgba(148, 163, 184, 0.15); color: var(--text-dim); }
+        .badge-last { background: rgba(59, 130, 246, 0.15); color: var(--accent-self); }
+
+        .task-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 8px; }
+        .task-desc { font-size: 0.95rem; color: var(--text-dim); line-height: 1.4; margin-bottom: 16px; }
+
+        /* Estilos del Temporizador Integrado */
+        .timer-card {
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .timer-display {
+            font-size: 2.2rem;
+            font-weight: 700;
+            font-family: monospace;
+            color: var(--accent-heavy);
+            margin-bottom: 8px;
+            letter-spacing: 2px;
+        }
+        .timer-controls {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .btn {
+            width: 100%; background-color: var(--accent); color: #ffffff;
+            border: none; padding: 12px; border-radius: 10px;
+            font-weight: bold; font-size: 0.95rem; cursor: pointer;
+            transition: transform 0.1s ease;
+        }
+        .btn:active { transform: scale(0.98); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .btn-secondary {
+            background-color: transparent; color: var(--text-dim);
+            border: 1px solid var(--border); margin-top: 8px;
+        }
+
+        .task-controls { display: flex; gap: 8px; margin-top: 14px; }
+        .btn-small {
+            flex: 1; padding: 8px; font-size: 0.8rem; border-radius: 8px;
+            cursor: pointer; border: 1px solid var(--border);
+            background: transparent; color: var(--text);
+        }
+        .btn-danger { color: var(--danger); border-color: var(--danger); }
+
+        .add-task-card {
+            background-color: var(--card); border: 1px solid var(--border);
+            border-radius: 16px; padding: 14px;
+        }
+        .add-task-toggle {
+            font-size: 0.85rem; font-weight: bold; color: var(--accent);
+            cursor: pointer; text-align: center;
+        }
+        .add-task-form {
+            display: none; flex-direction: column; gap: 10px; margin-top: 12px;
+        }
+        .add-task-form input, .add-task-form select, .modal-content input, .modal-content select {
+            background-color: var(--input-bg); border: 1px solid var(--border);
+            color: var(--text); padding: 10px; border-radius: 8px; font-size: 0.85rem; width: 100%;
+        }
+
+        .pet-card {
+            background-color: var(--card); border: 1px solid var(--border);
+            border-radius: 16px; padding: 16px; text-align: center;
+        }
+        .pet-select-buttons { display: flex; justify-content: center; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+        .btn-pet {
+            background: var(--input-bg); border: 1px solid var(--border); color: var(--text);
+            padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 0.8rem;
+        }
+        .btn-pet.active { background: var(--accent); color: #ffffff; border-color: var(--accent); font-weight: bold; }
+        .pet-avatar { font-size: 4rem; margin: 8px 0; display: inline-block; }
+        .pet-name { font-weight: bold; font-size: 1.1rem; }
+        .pet-level { font-size: 0.85rem; color: var(--accent); margin-bottom: 8px; }
+
+        .progress-bar-bg {
+            background: var(--input-bg); border: 1px solid var(--border);
+            border-radius: 10px; height: 14px; width: 100%; overflow: hidden;
+        }
+        .progress-bar-fill { background: var(--accent); height: 100%; width: 0%; transition: width 0.4s ease; }
+        .progress-text { font-size: 0.75rem; color: var(--text-dim); margin-top: 6px; }
+
+        .checkbox-group {
+            display: flex; flex-direction: column; gap: 6px; text-align: left;
+            background: var(--input-bg); border: 1px solid var(--border);
+            padding: 10px; border-radius: 8px; max-height: 120px; overflow-y: auto;
+        }
+        .checkbox-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; }
+        .checkbox-item input { width: auto; margin: 0; }
+
+        .task-list-container {
+            display: flex; flex-direction: column; gap: 8px;
+            max-height: 300px; overflow-y: auto; margin-top: 10px;
+        }
+        .task-item-card {
+            background: var(--input-bg); border: 1px solid var(--border);
+            padding: 10px; border-radius: 8px; display: flex;
+            justify-content: space-between; align-items: center; font-size: 0.8rem;
+        }
+        .task-item-info { display: flex; flex-direction: column; gap: 2px; }
+        .task-item-actions { display: flex; gap: 4px; }
+
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(15, 23, 42, 0.85); display: none;
+            justify-content: center; align-items: center; z-index: 2000;
+        }
+        .modal-content {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 16px; padding: 20px; width: 85%; max-width: 380px;
+            display: flex; flex-direction: column; gap: 10px;
+        }
+
+        footer { text-align: center; font-size: 0.7rem; color: var(--text-dim); margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="header-titles">
+            <h1>Oshikan</h1>
+            <p>Acción & Hábitos en tiempo real</p>
+        </div>
+        <button class="theme-toggle-btn" id="theme-btn" onclick="toggleTheme()">
+            <span id="theme-icon">🌙</span>
+        </button>
+    </header>
+
+    <!-- Banner de Frases & Trucos Dinámicos -->
+    <div class="tip-banner" id="tip-banner">
+        💡 Clicando en "Sugerir otra" romperás la parálisis por análisis.
+    </div>
+
+    <div class="sync-bar">
+        <div class="sync-status">
+            <div class="sync-dot" id="sync-dot"></div>
+            <span id="sync-text">Conectando a Firebase...</span>
+        </div>
+        <span style="color: var(--text-dim); font-size: 0.7rem;" id="sync-time">--:--</span>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value" id="streak">0</div>
+            <div class="stat-label">Racha Días</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="completed">0</div>
+            <div class="stat-label">Completadas Hoy</div>
+        </div>
+    </div>
+
+    <div class="mode-selector">
+        <div class="mode-title">¿Qué tipo de sesión buscas?</div>
+        <div class="mode-buttons">
+            <button class="btn-mode active-micro" id="btn-micro" onclick="setMode('micro')">Micro-tareas<br>(1-5 min)</button>
+            <button class="btn-mode" id="btn-heavy" onclick="setMode('heavy')">Exigente<br>(+15 min)</button>
+        </div>
+        <button class="btn btn-secondary" style="font-size: 0.75rem; padding: 6px; margin-top: 8px;" onclick="openOnboardingModal()">⚙️ Filtrar Sesión / Categorías</button>
+    </div>
+
+    <!-- Tarjeta Principal de Tarea -->
+    <div class="action-card">
+        <div class="badge-container">
+            <span class="badge" id="task-time">-- min</span>
+            <span class="badge badge-category" id="task-cat">General</span>
+            <span class="badge badge-last" id="task-last">Nunca realizada</span>
+        </div>
+        <div class="task-title" id="task-title">Cargando tareas...</div>
+        <div class="task-desc" id="task-desc">Sincronizando con la nube...</div>
+        
+        <!-- Temporizador (Específico para Tareas Exigentes) -->
+        <div class="timer-card" id="timer-container" style="display: none;">
+            <div style="font-size: 0.75rem; color: var(--text-dim); margin-bottom: 4px;">⏱️ Temporizador de Enfoque</div>
+            <div class="timer-display" id="timer-display">00:00</div>
+            <div class="timer-controls">
+                <button class="btn-small" id="btn-timer-start" onclick="toggleTimer()">▶️ Iniciar</button>
+                <button class="btn-small" onclick="resetTimer()">🔄 Reiniciar</button>
+            </div>
+        </div>
+
+        <button class="btn" id="btn-complete" onclick="completeTask()">¡Completar Tarea!</button>
+        <button class="btn btn-secondary" onclick="loadTask()">Sugerir otra</button>
+        
+        <div class="task-controls">
+            <button class="btn-small" onclick="openEditModalCurrent()">✏️ Editar</button>
+            <button class="btn-small btn-danger" onclick="deleteCurrentTask()">🗑️ Eliminar</button>
+        </div>
+    </div>
+
+    <!-- Sección de Añadir y Gestionar Tareas -->
+    <div class="add-task-card">
+        <div style="display: flex; gap: 8px; justify-content: center;">
+            <div class="add-task-toggle" onclick="toggleAddForm()">➕ Añadir tarea</div>
+            <span style="color: var(--border);">|</span>
+            <div class="add-task-toggle" style="color: var(--accent-self);" onclick="openManagerModal()">📋 Abrir Listado General</div>
+        </div>
+
+        <div class="add-task-form" id="add-form">
+            <input type="text" id="new-title" placeholder="Título de la tarea" />
+            <input type="text" id="new-desc" placeholder="Descripción corta" />
+            <input type="number" id="new-time" placeholder="Duración en minutos" min="1" />
+            <select id="new-cat">
+                <option value="Bienestar y Salud">Bienestar y Salud</option>
+                <option value="Productividad y Enfoque">Productividad y Enfoque</option>
+                <option value="Hogar y Rutina">Hogar y Rutina</option>
+                <option value="Desarrollo Personal">Desarrollo Personal</option>
+            </select>
+            <select id="new-mode">
+                <option value="micro">Modo: Micro-tarea</option>
+                <option value="heavy">Modo: Exigente</option>
+            </select>
+            <button class="btn" style="padding: 10px;" onclick="saveNewTask()">Guardar en Firebase</button>
+        </div>
+    </div>
+
+    <!-- Mascota / Evolución -->
+    <div class="pet-card">
+        <div class="pet-select-buttons">
+            <button class="btn-pet active" id="btn-dog" onclick="selectPetType('dog')">🐶 Perro</button>
+            <button class="btn-pet" id="btn-cat" onclick="selectPetType('cat')">🐱 Gato</button>
+            <button class="btn-pet" id="btn-plant" onclick="selectPetType('plant')">🌱 Planta</button>
+            <button class="btn-pet" id="btn-wine" onclick="selectPetType('wine')">🍷 Vino</button>
+        </div>
+        
+        <div class="pet-avatar" id="pet-avatar">🐶</div>
+        <div class="pet-name" id="pet-name">Cachorrito</div>
+        <div class="pet-level" id="pet-level">Fase 1: Recién nacido</div>
+
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progress-fill"></div>
+        </div>
+        <div class="progress-text" id="progress-text">Progreso hoy: 0%</div>
+    </div>
+
+    <footer>
+        Versión del código: 14/09/2026 13:35:00
+    </footer>
+</div>
+
+<!-- Modal Onboarding (Cuestionario Inicial) -->
+<div class="modal" id="onboarding-modal">
+    <div class="modal-content">
+        <h3 style="margin: 0;">¿Cómo planificamos hoy?</h3>
+        <label style="font-size: 0.8rem; color: var(--text-dim);">¿De cuánto tiempo dispones? (minutos)</label>
+        <input type="number" id="onboarding-time" placeholder="Ej. 15" value="30" min="1" />
+        
+        <label style="font-size: 0.8rem; color: var(--text-dim);">Categorías activas (Elige una o varias):</label>
+        <div class="checkbox-group" id="onboarding-categories">
+            <label class="checkbox-item"><input type="checkbox" value="Bienestar y Salud" checked> Bienestar y Salud</label>
+            <label class="checkbox-item"><input type="checkbox" value="Productividad y Enfoque" checked> Productividad y Enfoque</label>
+            <label class="checkbox-item"><input type="checkbox" value="Hogar y Rutina" checked> Hogar y Rutina</label>
+            <label class="checkbox-item"><input type="checkbox" value="Desarrollo Personal" checked> Desarrollo Personal</label>
+        </div>
+
+        <label style="font-size: 0.8rem; color: var(--text-dim);">Nivel de exigencia:</label>
+        <select id="onboarding-mode">
+            <option value="micro">Micro-tareas (Rápidas)</option>
+            <option value="heavy">Tareas Exigentes</option>
+        </select>
+
+        <button class="btn" onclick="applyOnboardingFilters()">Comenzar Sesión</button>
+    </div>
+</div>
+
+<!-- Modal Listado General / Gestor de Tareas -->
+<div class="modal" id="manager-modal">
+    <div class="modal-content" style="max-height: 85vh;">
+        <h3 style="margin: 0;">Gestor de Tareas</h3>
+        <input type="text" id="manager-search" placeholder="🔍 Buscar por título..." oninput="renderManagerList()" />
+        
+        <div class="task-list-container" id="manager-list"></div>
+
+        <button class="btn btn-secondary" onclick="closeManagerModal()">Cerrar</button>
+    </div>
+</div>
+
+<!-- Modal para Editar Tarea -->
+<div class="modal" id="edit-modal">
+    <div class="modal-content">
+        <h3 style="margin: 0 0 4px 0;">Editar Tarea</h3>
+        <input type="hidden" id="edit-task-id" />
+        <input type="text" id="edit-title" placeholder="Título" />
+        <input type="text" id="edit-desc" placeholder="Descripción" />
+        <input type="number" id="edit-time" placeholder="Minutos" min="1" />
+        <select id="edit-cat">
+            <option value="Bienestar y Salud">Bienestar y Salud</option>
+            <option value="Productividad y Enfoque">Productividad y Enfoque</option>
+            <option value="Hogar y Rutina">Hogar y Rutina</option>
+            <option value="Desarrollo Personal">Desarrollo Personal</option>
+        </select>
+        <select id="edit-mode">
+            <option value="micro">Micro-tarea</option>
+            <option value="heavy">Exigente</option>
+        </select>
+        <button class="btn" onclick="saveEditedTask()">Guardar Cambios</button>
+        <button class="btn btn-secondary" onclick="closeEditModal()">Cancelar</button>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, onSnapshot, addDoc, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCQsOubKUDZ5Wa6f-GWHVGTMPnITcB4dO0",
+      authDomain: "oshikan-6bf46.firebaseapp.com",
+      projectId: "oshikan-6bf46",
+      storageBucket: "oshikan-6bf46.firebasestorage.app",
+      messagingSenderId: "226841565820",
+      appId: "1:226841565820:web:2487821cb0d3d2815f87f9"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let tasks = [];
+    let currentTask = null;
+    let currentMode = 'micro';
+    let maxTimeAvailable = 120;
+    let selectedCategories = ["Bienestar y Salud", "Productividad y Enfoque", "Hogar y Rutina", "Desarrollo Personal"];
+    let completedToday = 0;
+    let currentPetType = 'dog';
+
+    // Variables del Temporizador
+    let timerInterval = null;
+    let timeLeftSeconds = 0;
+    let isTimerRunning = false;
+
+    // Colección de Frases Motivacionales y Trucos de Productividad
+    const tipsList = [
+        "💡 Regla de los 2 minutos: Si tarda menos de 2 minutos, hazlo ya.",
+        "🔥 El impulso sigue a la acción, no a la motivación. ¡Empieza!",
+        "🎯 Una sola tarea a la vez vence al caos de la multitarea.",
+        "🧠 Regla de los 5 segundos: Cuenta 5, 4, 3, 2, 1 y ¡a moverse!",
+        "⚡ La constancia diaria vence al talento indisciplinado.",
+        "🌱 Cuidar de tu mascota en Oshikan es cuidar de tu tiempo.",
+        "⏱️ La técnica Pomodoro te protege del agotamiento mental.",
+        "🏆 Los pequeños avances invisibles crean grandes transformaciones.",
+        "✨ No busques perfección, busca simplemente completar.",
+        "🧠 Romper una gran tarea en micro-pasos elimina la procrastinación."
+    ];
+
+    let currentTipIndex = 0;
+
+    // Rotador de Frases / Trucos cada 5 segundos
+    function startTipRotator() {
+        setInterval(() => {
+            const banner = document.getElementById('tip-banner');
+            banner.classList.add('fade-out');
+            setTimeout(() => {
+                currentTipIndex = (currentTipIndex + 1) % tipsList.length;
+                banner.innerText = tipsList[currentTipIndex];
+                banner.classList.remove('fade-out');
+            }, 400);
+        }, 5000);
+    }
+
+    const petEvolution = {
+        dog: [
+            { icon: "🐶", name: "Cachorrito", level: "Fase 1: Bebé" },
+            { icon: "🐕", name: "Perro Joven", level: "Fase 2: En Crecimiento" },
+            { icon: "🦮", name: "Perro Guía", level: "Fase 3: Adulto Fuerte" }
+        ],
+        cat: [
+            { icon: "🐱", name: "Gatito", level: "Fase 1: Bebé" },
+            { icon: "🐈", name: "Gato Curioso", level: "Fase 2: Explorador" },
+            { icon: "🐅", name: "Tigre de Foco", level: "Fase 3: Maestro" }
+        ],
+        plant: [
+            { icon: "🌱", name: "Brote", level: "Fase 1: Semilla" },
+            { icon: "🪴", name: "Planta Joven", level: "Fase 2: Floreciendo" },
+            { icon: "🌳", name: "Árbol Robusto", level: "Fase 3: Gran Árbol" }
+        ],
+        wine: [
+            { icon: "🍾", name: "Botella Vacía", level: "Fase 1: Decantando (0%)" },
+            { icon: "🍷", name: "Copa Servida", level: "Fase 2: Media Botella (50%)" },
+            { icon: "🥂", name: "Copa Llena & Brindis", level: "Fase 3: Botella Reserva (100%)" }
+        ]
+    };
+
+    const syncDot = document.getElementById('sync-dot');
+    const syncText = document.getElementById('sync-text');
+    const syncTime = document.getElementById('sync-time');
+
+    onSnapshot(collection(db, "tasks"), (snapshot) => {
+        tasks = [];
+        snapshot.forEach((docSnap) => {
+            tasks.push({ id: docSnap.id, ...docSnap.data() });
+        });
+
+        syncDot.className = "sync-dot connected";
+        syncText.innerText = "Sincronizado con Firebase";
+        const now = new Date();
+        syncTime.innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+        window.loadTask();
+        window.renderManagerList();
+    }, (error) => {
+        console.error("Error en tiempo real:", error);
+        syncDot.className = "sync-dot error";
+        syncText.innerText = "Error de conexión";
+    });
+
+    window.loadTask = function() {
+        let filtered = tasks.filter(t => {
+            const matchesMode = t.mode === currentMode;
+            const matchesTime = t.minutes <= maxTimeAvailable;
+            const matchesCat = selectedCategories.includes(t.cat);
+            return matchesMode && matchesTime && matchesCat;
+        });
+
+        const btnComplete = document.getElementById('btn-complete');
+
+        if (filtered.length === 0) {
+            document.getElementById('task-title').innerText = "Sin tareas disponibles";
+            document.getElementById('task-desc').innerText = "Ajusta los filtros de tiempo/categoría o crea nuevas tareas.";
+            document.getElementById('task-time').innerText = "-- min";
+            document.getElementById('task-cat').innerText = "General";
+            document.getElementById('task-last').innerText = "N/A";
+            currentTask = null;
+            btnComplete.disabled = true;
+            window.setupTimerForTask();
+            return;
+        }
+
+        btnComplete.disabled = false;
+
+        if (currentMode === 'heavy') {
+            filtered.sort((a, b) => {
+                if (!a.lastCompleted) return -1;
+                if (!b.lastCompleted) return 1;
+                return new Date(a.lastCompleted) - new Date(b.lastCompleted);
+            });
+            currentTask = filtered[0];
+        } else {
+            currentTask = filtered[Math.floor(Math.random() * filtered.length)];
+        }
+
+        document.getElementById('task-title').innerText = currentTask.title;
+        document.getElementById('task-desc').innerText = currentTask.desc;
+        document.getElementById('task-time').innerText = currentTask.minutes + " min";
+        document.getElementById('task-cat').innerText = currentTask.cat || "Bienestar y Salud";
+        
+        if (currentTask.lastCompleted) {
+            const diffTime = Math.abs(new Date() - new Date(currentTask.lastCompleted));
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            document.getElementById('task-last').innerText = diffDays === 0 ? "Completada hoy" : `Hace ${diffDays} día(s)`;
+        } else {
+            document.getElementById('task-last').innerText = "Nunca realizada";
+        }
+
+        window.setupTimerForTask();
+    };
+
+    /* Lógica del Temporizador */
+    window.setupTimerForTask = function() {
+        clearInterval(timerInterval);
+        isTimerRunning = false;
+        const container = document.getElementById('timer-container');
+        const startBtn = document.getElementById('btn-timer-start');
+
+        if (currentTask && currentMode === 'heavy') {
+            container.style.display = 'block';
+            timeLeftSeconds = (parseInt(currentTask.minutes) || 15) * 60;
+            updateTimerDisplay();
+            if (startBtn) startBtn.innerText = "▶️ Iniciar";
+        } else {
+            container.style.display = 'none';
+        }
+    };
+
+    function updateTimerDisplay() {
+        const mins = Math.floor(timeLeftSeconds / 60);
+        const secs = timeLeftSeconds % 60;
+        const formatted = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        document.getElementById('timer-display').innerText = formatted;
+    }
+
+    window.toggleTimer = function() {
+        const startBtn = document.getElementById('btn-timer-start');
+        if (isTimerRunning) {
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            startBtn.innerText = "▶️ Reanudar";
+        } else {
+            if (timeLeftSeconds <= 0) return;
+            isTimerRunning = true;
+            startBtn.innerText = "⏸️ Pausar";
+            timerInterval = setInterval(() => {
+                timeLeftSeconds--;
+                updateTimerDisplay();
+                if (timeLeftSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    isTimerRunning = false;
+                    startBtn.innerText = "▶️ Iniciar";
+                    alert("⏰ ¡Tiempo completado! Gran trabajo en esta tarea exigente.");
+                }
+            }, 1000);
+        }
+    };
+
+    window.resetTimer = function() {
+        clearInterval(timerInterval);
+        isTimerRunning = false;
+        if (currentTask) {
+            timeLeftSeconds = (parseInt(currentTask.minutes) || 15) * 60;
+        } else {
+            timeLeftSeconds = 0;
+        }
+        updateTimerDisplay();
+        document.getElementById('btn-timer-start').innerText = "▶️ Iniciar";
+    };
+
+    window.setMode = function(mode) {
+        currentMode = mode;
+        document.getElementById('btn-micro').className = 'btn-mode' + (mode === 'micro' ? ' active-micro' : '');
+        document.getElementById('btn-heavy').className = 'btn-mode' + (mode === 'heavy' ? ' active-heavy' : '');
+        window.loadTask();
+    };
+
+    window.saveNewTask = async function() {
+        const title = document.getElementById('new-title').value.trim();
+        const desc = document.getElementById('new-desc').value.trim();
+        const minutes = parseInt(document.getElementById('new-time').value.trim());
+        const cat = document.getElementById('new-cat').value;
+        const mode = document.getElementById('new-mode').value;
+
+        if (!title || !desc || isNaN(minutes)) return alert("Completa los datos de la tarea.");
+
+        await addDoc(collection(db, "tasks"), { 
+            title, desc, minutes, cat, mode, lastCompleted: null 
+        });
+
+        document.getElementById('new-title').value = '';
+        document.getElementById('new-desc').value = '';
+        document.getElementById('new-time').value = '';
+        window.toggleAddForm();
+    };
+
+    window.openEditModalCurrent = function() {
+        if (!currentTask) return;
+        window.openEditModalById(currentTask.id);
+    };
+
+    window.openEditModalById = function(id) {
+        const task = tasks.find(t => t.id === id);
+        if (!task) return;
+
+        document.getElementById('edit-task-id').value = task.id;
+        document.getElementById('edit-title').value = task.title;
+        document.getElementById('edit-desc').value = task.desc;
+        document.getElementById('edit-time').value = task.minutes;
+        document.getElementById('edit-cat').value = task.cat || "Bienestar y Salud";
+        document.getElementById('edit-mode').value = task.mode || "micro";
+        document.getElementById('edit-modal').style.display = 'flex';
+    };
+
+    window.closeEditModal = function() {
+        document.getElementById('edit-modal').style.display = 'none';
+    };
+
+    window.saveEditedTask = async function() {
+        const id = document.getElementById('edit-task-id').value;
+        const title = document.getElementById('edit-title').value.trim();
+        const desc = document.getElementById('edit-desc').value.trim();
+        const minutes = parseInt(document.getElementById('edit-time').value.trim());
+        const cat = document.getElementById('edit-cat').value;
+        const mode = document.getElementById('edit-mode').value;
+
+        if (!id || !title || !desc || isNaN(minutes)) return;
+
+        const taskRef = doc(db, "tasks", id);
+        await updateDoc(taskRef, { title, desc, minutes, cat, mode });
+        window.closeEditModal();
+    };
+
+    window.deleteTaskById = async function(id) {
+        const task = tasks.find(t => t.id === id);
+        if (task && confirm(`¿Eliminar la tarea "${task.title}"?`)) {
+            await deleteDoc(doc(db, "tasks", id));
+        }
+    };
+
+    window.deleteCurrentTask = function() {
+        if (!currentTask) return;
+        window.deleteTaskById(currentTask.id);
+    };
+
+    window.completeTask = async function() {
+        if (!currentTask) return;
+
+        window.resetTimer();
+        const taskRef = doc(db, "tasks", currentTask.id);
+        const todayIso = new Date().toISOString();
+        await updateDoc(taskRef, { lastCompleted: todayIso });
+
+        completedToday++;
+        document.getElementById('completed').innerText = completedToday;
+        updatePetProgression();
+        window.loadTask();
+    };
+
+    window.renderManagerList = function() {
+        const searchVal = document.getElementById('manager-search').value.toLowerCase();
+        const listContainer = document.getElementById('manager-list');
+        listContainer.innerHTML = '';
+
+        const searchedTasks = tasks.filter(t => t.title.toLowerCase().includes(searchVal));
+
+        if (searchedTasks.length === 0) {
+            listContainer.innerHTML = '<div style="font-size:0.8rem; color:var(--text-dim); text-align:center;">No hay tareas registradas.</div>';
+            return;
+        }
+
+        searchedTasks.forEach(t => {
+            const div = document.createElement('div');
+            div.className = 'task-item-card';
+            div.innerHTML = `
+                <div class="task-item-info">
+                    <strong>${t.title}</strong>
+                    <span style="color:var(--text-dim); font-size:0.75rem;">${t.minutes} min | ${t.cat} | ${t.mode === 'micro' ? 'Micro' : 'Exigente'}</span>
+                </div>
+                <div class="task-item-actions">
+                    <button class="btn-small" onclick="window.openEditModalById('${t.id}')">✏️</button>
+                    <button class="btn-small btn-danger" onclick="window.deleteTaskById('${t.id}')">🗑️</button>
+                </div>
+            `;
+            listContainer.appendChild(div);
+        });
+    };
+
+    window.openManagerModal = function() {
+        window.renderManagerList();
+        document.getElementById('manager-modal').style.display = 'flex';
+    };
+
+    window.closeManagerModal = function() {
+        document.getElementById('manager-modal').style.display = 'none';
+    };
+
+    window.selectPetType = function(type) {
+        currentPetType = type;
+        ['dog', 'cat', 'plant', 'wine'].forEach(p => {
+            document.getElementById(`btn-${p}`).className = 'btn-pet' + (p === type ? ' active' : '');
+        });
+        updatePetProgression();
+    };
+
+    function updatePetProgression() {
+        const target = 4;
+        const percentage = Math.min(Math.round((completedToday / target) * 100), 100);
+        
+        document.getElementById('progress-fill').style.width = percentage + '%';
+        document.getElementById('progress-text').innerText = `Progreso hoy: ${percentage}%`;
+
+        let phaseIndex = 0;
+        if (percentage >= 100) phaseIndex = 2;
+        else if (percentage >= 50) phaseIndex = 1;
+
+        const stage = petEvolution[currentPetType][phaseIndex];
+        document.getElementById('pet-avatar').innerText = stage.icon;
+        document.getElementById('pet-name').innerText = stage.name;
+        document.getElementById('pet-level').innerText = stage.level;
+    }
+
+    window.toggleAddForm = function() {
+        const form = document.getElementById('add-form');
+        form.style.display = form.style.display === 'flex' ? 'none' : 'flex';
+    };
+
+    window.openOnboardingModal = function() {
+        document.getElementById('onboarding-modal').style.display = 'flex';
+    };
+
+    window.applyOnboardingFilters = function() {
+        const timeInput = parseInt(document.getElementById('onboarding-time').value);
+        if (!isNaN(timeInput) && timeInput > 0) {
+            maxTimeAvailable = timeInput;
+        }
+
+        const checkedBoxes = document.querySelectorAll('#onboarding-categories input[type="checkbox"]:checked');
+        selectedCategories = Array.from(checkedBoxes).map(cb => cb.value);
+
+        if (selectedCategories.length === 0) {
+            alert("Por favor selecciona al menos una categoría.");
+            return;
+        }
+
+        const modeInput = document.getElementById('onboarding-mode').value;
+        window.setMode(modeInput);
+        document.getElementById('onboarding-modal').style.display = 'none';
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+        startTipRotator();
+        window.openOnboardingModal();
+    });
+</script>
+
+<script>
+    function toggleTheme() {
+        const body = document.body;
+        const icon = document.getElementById('theme-icon');
+        body.classList.toggle('light-theme');
+
+        if (body.classList.contains('light-theme')) {
+            icon.innerText = '☀️';
+            localStorage.setItem('oshikan_theme', 'light');
+        } else {
+            icon.innerText = '🌙';
+            localStorage.setItem('oshikan_theme', 'dark');
+        }
+    }
+
+    if (localStorage.getItem('oshikan_theme') === 'light') {
+        document.body.classList.add('light-theme');
+        document.getElementById('theme-icon').innerText = '☀️';
+    }
+</script>
+</body>
+</html>
+
+```
