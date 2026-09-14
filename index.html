@@ -393,7 +393,7 @@
     </div>
 
     <footer>
-        Versión del código: 14/09/2026 15:15:00
+        Versión del código: 14/09/2026 16:00:00
     </footer>
 </div>
 
@@ -492,18 +492,15 @@
         "🌱 Cuidar de tu mascota en No more Guarris es cuidar de tu tiempo.",
         "⏱️ La técnica Pomodoro te protege del agotamiento mental.",
         "🏆 Los pequeños avances invisibles crean grandes transformaciones.",
-        // --- FRASES AÑADIDAS EN ESPAÑOL ---
-    "🧩 Si una tarea te abruma, divídela en el paso más pequeño posible.",
-    "🚀 El perfeccionismo es el enemigo de lo empezado: hazlo imperfecto, pero hazlo.",
-    "🛑 Decir que 'no' a una distracción es decirte que 'sí' a tus prioridades.",
-    "💧 Un espacio despejado crea una mente tranquila y enfocado.",
-    "🔄 No rompan la cadena: hacer un poquito hoy vale más que hacer mucho mañana.",
-    "🏁 La satisfacción de tachar una tarea completada no te la quita nadie.",
-
-    // --- CONCEPTO "OSHI" (APOYO / IMPULSO EN JAPONÉS) ---
-    "⭐ Haz de tu enfoque tu verdadero Oshi (推し): ponle toda tu energía y devoción.",
-    "✨ Tu mascota es tu Oshi: cada microtarea completada es tu forma de apoyarla y hacerla crecer.",
-    "🎌 Convierte la disciplina en tu Oshi del día a día y verás los resultados."
+        "🧩 Si una tarea te abruma, divídela en el paso más pequeño posible.",
+        "🚀 El perfeccionismo es el enemigo de lo empezado: hazlo imperfecto, pero hazlo.",
+        "🛑 Decir que 'no' a una distracción es decirte que 'sí' a tus prioridades.",
+        "💧 Un espacio despejado crea una mente tranquila y enfocada.",
+        "🔄 No rompas la cadena: hacer un poquito hoy vale más que hacer mucho mañana.",
+        "🏁 La satisfacción de tachar una tarea completada no te la quita nadie.",
+        "⭐ Haz de tu enfoque tu verdadero Oshi (推し): ponle toda tu energía y devoción.",
+        "✨ Tu mascota es tu Oshi: cada microtarea completada es tu forma de apoyarla y hacerla crecer.",
+        "🎌 Convierte la disciplina en tu Oshi del día a día y verás los resultados."
     ];
 
     let currentTipIndex = 0;
@@ -812,36 +809,32 @@
     // Función de Importación Masiva
     window.importAllTasks = async function() {
         const newTasksList = [
-           // --- NUEVO BLOQUE DE TAREAS ---
-{ title: "🗄️ Organizar el cajón del desastre", desc: "Saca todo, tira lo inservible y agrupa lo que quede por categorías.", minutes: 15, cat: "Hogar y Rutina", mode: "heavy", lastCompleted: null },
-{ title: "💻 Limpiar teclado y pantalla del ordenador", desc: "Pasa un paño de microfibra con un poco de alcohol o limpiador por la pantalla y entre las teclas.", minutes: 5, cat: "Productividad y Enfoque", mode: "micro", lastCompleted: null },
-{ title: "📱 Vaciar la carpeta de Descargas", desc: "Revisa la carpeta de descargas del móvil o PC y borra archivos pesados o duplicados.", minutes: 5, cat: "Productividad y Enfoque", mode: "micro", lastCompleted: null },
-{ title: "🚿 Limpieza profunda del baño", desc: "Aplica producto antical, frota bien los cristales/perfiles y aclara.", minutes: 30, cat: "Hogar y Rutina", mode: "heavy", lastCompleted: null },
-{ title: "🧼 Desinfectar bayetas y estropajos", desc: "Pon las bayetas en agua hirviendo con lejía o pásalas por la lavadora.", minutes: 3, cat: "Hogar y Rutina", mode: "micro", lastCompleted: null },
-{ title: "☕ Limpiar a fondo la cafetera", desc: "Haz un ciclo de descalcificación o limpia el depósito y los filtros de la cafetera.", minutes: 10, cat: "Hogar y Rutina", mode: "micro", lastCompleted: null },
-{ title: "🔌 Recoger y sujetar cables sueltos", desc: "Usa bridas o velcros para ordenar los cables que estén por el suelo o detrás de mesas.", minutes: 15, cat: "Productividad y Enfoque", mode: "heavy", lastCompleted: null },
-{ title: "🗑️ Tirar basura de la casa", desc: "Recoge las bolsas del baño, escritorio y cocina, y bájalas al contenedor.", minutes: 5, cat: "Hogar y Rutina", mode: "micro", lastCompleted: null },
-{ title: "📚 Ordenar una estantería o balda", desc: "Alinea libros, retira el polvo y despeja los objetos sobrantes.", minutes: 10, cat: "Hogar y Rutina", mode: "micro", lastCompleted: null },
-            // --- NUEVO BLOQUE DE TAREAS (MANTENIMIENTO, PRODUCTIVIDAD Y BIENESTAR) ---
-{ title: "🧦 Desparejar y ordenar calcetines", desc: "Busca las parejas de los calcetines sueltos y dobla el cajón.", minutes: 10, cat: "Hogar y Rutina", mode: "micro", lastCompleted: null },
-{ title: "📧 Cancelar suscripción a 3 newsletters", desc: "Abre tu correo, busca promociones obsoletas y date de baja en al menos 3.", minutes: 5, cat: "Productividad y Enfoque", mode: "micro", lastCompleted: null },
-{ title: "🧊 Descongelar o limpiar estantes del congelador", desc: "Retira el hielo acumulado y pasa un paño rápido por las baldas del congelador.", minutes: 20, cat: "Hogar y Rutina", mode: "heavy", lastCompleted: null },
-{ title: "🌱 Regar y quitar hojas secas a las plantas", desc: "Comprueba la tierra de tus plantas, riégalas y retira las partes marchitas.", minutes: 5, cat: "Bienestar y Salud", mode: "micro", lastCompleted: null },
-{ title: "👓 Limpiar gafas y pantallas de dispositivos", desc: "Usa spray o gamuza para dejar impolutas tus gafas, móvil y tablet.", minutes: 3, cat: "Productividad y Enfoque", mode: "micro", lastCompleted: null },
-{ title: "🛏️ Darle la vuelta al colchón", desc: "Gira o voltea el colchón para mantener su forma y ventilación.", minutes: 15, cat: "Hogar y Rutina", mode: "heavy", lastCompleted: null },
-{ title: "💳 Revisar suscripciones activas del banco", desc: "Echa un ojo a los cargos del mes y cancela los servicios que ya no uses.", minutes: 10, cat: "Productividad y Enfoque", mode: "micro", lastCompleted: null },
-{ title: "🧺 Poner una lavadora de ropa oscura / clara", desc: "Separa la ropa por colores, añade detergente y programa el lavado.", minutes: 5, cat: "Hogar y Rutina", mode: "micro", lastCompleted: null },
-{ title: "🚪 Limpiar los pomos y tiradores de toda la casa", desc: "Pasa un paño desinfectante por los pomos de las puertas y cajones.", minutes: 5, cat: "Hogar y Rutina", mode: "micro", lastCompleted: null },
-{ title: "🥗 Planificar las comidas de los próximos 3 días", desc: "Apunta un menú sencillo para evitar improvisar e ir a comprar a lo loco.", minutes: 15, cat: "Bienestar y Salud", mode: "heavy", lastCompleted: null },
-{ title: "🧼 Limpiar la bandeja del microondas y paredes", desc: "Retira restos de comida pegados del interior del microondas.", minutes: 5, cat: "Hogar y Rutina", mode: "micro", lastCompleted: null },
-{ title: "👟 Dejar preparado el vestuario de mañana", desc: "Elige la ropa y calzado que te pondrás para ahorrar tiempo al despertar.", minutes: 5, cat: "Productividad y Enfoque", mode: "micro", lastCompleted: null },
-            // --- BLOQUE TAREAS DE BIENESTAR (CONTACTO Y CONEXIÓN) ---
-{ title: "📞 Hablar con mis hermanas", desc: "Dedica unos minutos a llamar o mandar un mensaje para saber cómo están.", minutes: 5, cat: "Bienestar y Salud", mode: "micro", lastCompleted: null },
-{ title: "💬 Contactar con mi sobrina", desc: "Escríbele o llámala para ponerte al día con ella.", minutes: 5, cat: "Bienestar y Salud", mode: "micro", lastCompleted: null },
-{ title: "👑 Mandar un mensaje a la prima guarris", desc: "Un check-in rápido para saber de su vida y mantener el contacto.", minutes: 5, cat: "Bienestar y Salud", mode: "micro", lastCompleted: null },
-{ title: "🐾 Ponerme al día con el Huskito", desc: "Escribirle o llamarle para charlar un rato.", minutes: 5, cat: "Bienestar y Salud", mode: "micro", lastCompleted: null },
-{ title: "✨ Hablar con la Lina", desc: "Enviar un audio o llamar a Lina para mantener el vínculo.", minutes: 5, cat: "Bienestar y Salud", mode: "micro", lastCompleted: null }
-        
+            { title: "🗄️ Organizar el cajón del desastre", desc: "Saca todo, tira lo inservible y agrupa lo que quede por categorías.", minutes: 15, cat: "Hogar y Rutina", mode: "heavy", lastCompleted: null },
+            { title: "💻 Limpiar teclado y pantalla del ordenador", desc: "Pasa un paño de microfibra con un poco de alcohol o limpiador por la pantalla y entre las teclas.", minutes: 5, cat: "Productividad y Enfoque", mode: "micro", lastCompleted: null },
+            { title: "📱 Vaciar la carpeta de Descargas", desc: "Revisa la carpeta de descargas del móvil o PC y borra archivos pesados o duplicados.", minutes: 5, cat: "Productividad y Enfoque", mode: "micro", lastCompleted: null },
+            { title: "🚿 Limpieza profunda del baño", desc: "Aplica producto antical, frota bien los cristales/perfiles y aclara.", minutes: 30, cat: "Hogar y Rutina", mode: "heavy", lastCompleted: null },
+            { title: "🧼 Desinfectar bayetas y estropajos", desc: "Pon las bayetas en agua hirviendo con lejía o pásalas por la lavadora.", minutes: 3, cat: "Hogar y Rutina", mode: "micro", lastCompleted: null },
+            { title: "☕ Limpiar a fondo la cafetera", desc: "Haz un ciclo de descalcificación o limpia el depósito y los filtros de la cafetera.", minutes: 10, cat: "Hogar y Rutina", mode: "micro", lastCompleted: null },
+            { title: "🔌 Recoger y sujetar cables sueltos", desc: "Usa bridas o velcros para ordenar los cables que estén por el suelo o detrás de mesas.", minutes: 15, cat: "Productividad y Enfoque", mode: "heavy", lastCompleted: null },
+            { title: "🗑️ Tirar basura de la casa", desc: "Recoge las bolsas del baño, escritorio y cocina, y bájalas al contenedor.", minutes: 5, cat: "Hogar y Rutina", mode: "micro", lastCompleted: null },
+            { title: "📚 Ordenar una estantería o balda", desc: "Alinea libros, retira el polvo y despeja los objetos sobrantes.", minutes: 10, cat: "Hogar y Rutina", mode: "micro", lastCompleted: null },
+            { title: "🧦 Desparejar y ordenar calcetines", desc: "Busca las parejas de los calcetines sueltos y dobla el cajón.", minutes: 10, cat: "Hogar y Rutina", mode: "micro", lastCompleted: null },
+            { title: "📧 Cancelar suscripción a 3 newsletters", desc: "Abre tu correo, busca promociones obsoletas y date de baja en al menos 3.", minutes: 5, cat: "Productividad y Enfoque", mode: "micro", lastCompleted: null },
+            { title: "🧊 Descongelar o limpiar estantes del congelador", desc: "Retira el hielo acumulado y pasa un paño rápido por las baldas del congelador.", minutes: 20, cat: "Hogar y Rutina", mode: "heavy", lastCompleted: null },
+            { title: "🌱 Regar y quitar hojas secas a las plantas", desc: "Comprueba la tierra de tus plantas, riégalas y retira las partes marchitas.", minutes: 5, cat: "Bienestar y Salud", mode: "micro", lastCompleted: null },
+            { title: "👓 Limpiar gafas y pantallas de dispositivos", desc: "Usa spray o gamuza para dejar impolutas tus gafas, móvil y tablet.", minutes: 3, cat: "Productividad y Enfoque", mode: "micro", lastCompleted: null },
+            { title: "🛏️ Darle la vuelta al colchón", desc: "Gira o voltea el colchón para mantener su forma y ventilación.", minutes: 15, cat: "Hogar y Rutina", mode: "heavy", lastCompleted: null },
+            { title: "💳 Revisar suscripciones activas del banco", desc: "Echa un ojo a los cargos del mes y cancela los servicios que ya no uses.", minutes: 10, cat: "Productividad y Enfoque", mode: "micro", lastCompleted: null },
+            { title: "🧺 Poner una lavadora de ropa oscura / clara", desc: "Separa la ropa por colores, añade detergente y programa el lavado.", minutes: 5, cat: "Hogar y Rutina", mode: "micro", lastCompleted: null },
+            { title: "🚪 Limpiar los pomos y tiradores de toda la casa", desc: "Pasa un paño desinfectante por los pomos de las puertas y cajones.", minutes: 5, cat: "Hogar y Rutina", mode: "micro", lastCompleted: null },
+            { title: "🥗 Planificar las comidas de los próximos 3 días", desc: "Apunta un menú sencillo para evitar improvisar e ir a comprar a lo loco.", minutes: 15, cat: "Bienestar y Salud", mode: "heavy", lastCompleted: null },
+            { title: "🧼 Limpiar la bandeja del microondas y paredes", desc: "Retira restos de comida pegados del interior del microondas.", minutes: 5, cat: "Hogar y Rutina", mode: "micro", lastCompleted: null },
+            { title: "👟 Dejar preparado el vestuario de mañana", desc: "Elige la ropa y calzado que te pondrás para ahorrar tiempo al despertar.", minutes: 5, cat: "Productividad y Enfoque", mode: "micro", lastCompleted: null },
+            { title: "📞 Hablar con mis hermanas", desc: "Dedica unos minutos a llamar o mandar un mensaje para saber cómo están.", minutes: 5, cat: "Bienestar y Salud", mode: "micro", lastCompleted: null },
+            { title: "💬 Contactar con mi sobrina", desc: "Escríbele o llámala para ponerte al día con ella.", minutes: 5, cat: "Bienestar y Salud", mode: "micro", lastCompleted: null },
+            { title: "👑 Mandar un mensaje a la prima guarris", desc: "Un check-in rápido para saber de su vida y mantener el contacto.", minutes: 5, cat: "Bienestar y Salud", mode: "micro", lastCompleted: null },
+            { title: "🐾 Ponerme al día con el Huskito", desc: "Escribirle o llamarle para charlar un rato.", minutes: 5, cat: "Bienestar y Salud", mode: "micro", lastCompleted: null },
+            { title: "✨ Hablar con la Lina", desc: "Enviar un audio o llamar a Lina para mantener el vínculo.", minutes: 5, cat: "Bienestar y Salud", mode: "micro", lastCompleted: null }
         ];
 
         if (confirm(`¿Quieres importar ${newTasksList.length} tareas nuevas a tu base de datos?`)) {
