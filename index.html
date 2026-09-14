@@ -77,7 +77,6 @@
             gap: 6px;
         }
 
-        /* Banner Dinámico de Frases / Trucos */
         .tip-banner {
             background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(16, 185, 129, 0.15));
             border: 1px solid var(--border);
@@ -155,7 +154,6 @@
         .task-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 8px; }
         .task-desc { font-size: 0.95rem; color: var(--text-dim); line-height: 1.4; margin-bottom: 16px; }
 
-        /* Estilos del Temporizador Integrado */
         .timer-card {
             background: var(--input-bg);
             border: 1px solid var(--border);
@@ -284,7 +282,6 @@
         </button>
     </header>
 
-    <!-- Banner de Frases & Trucos Dinámicos -->
     <div class="tip-banner" id="tip-banner">
         💡 Clicando en "Sugerir otra" romperás la parálisis por análisis.
     </div>
@@ -327,7 +324,6 @@
         <div class="task-title" id="task-title">Cargando tareas...</div>
         <div class="task-desc" id="task-desc">Sincronizando con la nube...</div>
         
-        <!-- Temporizador (Específico para Tareas Exigentes) -->
         <div class="timer-card" id="timer-container" style="display: none;">
             <div style="font-size: 0.75rem; color: var(--text-dim); margin-bottom: 4px;">⏱️ Temporizador de Enfoque</div>
             <div class="timer-display" id="timer-display">00:00</div>
@@ -354,7 +350,7 @@
             <div class="add-task-toggle" style="color: var(--accent-self);" onclick="openManagerModal()">📋 Abrir Listado General</div>
         </div>
 
-        <!-- Botón Carga Masiva -->
+        <!-- Botón Carga Masiva visible -->
         <button class="btn" style="background-color: var(--accent-self); margin-top: 12px; font-size: 0.85rem; padding: 10px;" onclick="importAllTasks()">
             🚀 Cargar todas las tareas nuevas de golpe
         </button>
@@ -397,18 +393,18 @@
     </div>
 
     <footer>
-        Versión del código: 14/09/2026 13:35:00
+        Versión del código: 14/09/2026 15:15:00
     </footer>
 </div>
 
-<!-- Modal Onboarding (Cuestionario Inicial) -->
+<!-- Modales -->
 <div class="modal" id="onboarding-modal">
     <div class="modal-content">
         <h3 style="margin: 0;">¿Cómo planificamos hoy?</h3>
         <label style="font-size: 0.8rem; color: var(--text-dim);">¿De cuánto tiempo dispones? (minutos)</label>
         <input type="number" id="onboarding-time" placeholder="Ej. 15" value="30" min="1" />
         
-        <label style="font-size: 0.8rem; color: var(--text-dim);">Categorías activas (Elige una o varias):</label>
+        <label style="font-size: 0.8rem; color: var(--text-dim);">Categorías activas:</label>
         <div class="checkbox-group" id="onboarding-categories">
             <label class="checkbox-item"><input type="checkbox" value="Bienestar y Salud" checked> Bienestar y Salud</label>
             <label class="checkbox-item"><input type="checkbox" value="Productividad y Enfoque" checked> Productividad y Enfoque</label>
@@ -426,7 +422,6 @@
     </div>
 </div>
 
-<!-- Modal Listado General / Gestor de Tareas -->
 <div class="modal" id="manager-modal">
     <div class="modal-content" style="max-height: 85vh;">
         <h3 style="margin: 0;">Gestor de Tareas</h3>
@@ -438,7 +433,6 @@
     </div>
 </div>
 
-<!-- Modal para Editar Tarea -->
 <div class="modal" id="edit-modal">
     <div class="modal-content">
         <h3 style="margin: 0 0 4px 0;">Editar Tarea</h3>
@@ -485,12 +479,10 @@
     let completedToday = 0;
     let currentPetType = 'dog';
 
-    // Variables del Temporizador
     let timerInterval = null;
     let timeLeftSeconds = 0;
     let isTimerRunning = false;
 
-    // Colección de Frases Motivacionales y Trucos de Productividad
     const tipsList = [
         "💡 Regla de los 2 minutos: Si tarda menos de 2 minutos, hazlo ya.",
         "🔥 El impulso sigue a la acción, no a la motivación. ¡Empieza!",
@@ -499,32 +491,21 @@
         "⚡ La constancia diaria vence al talento indisciplinado.",
         "🌱 Cuidar de tu mascota en No more Guarris es cuidar de tu tiempo.",
         "⏱️ La técnica Pomodoro te protege del agotamiento mental.",
-        "🏆 Los pequeños avances invisibles crean grandes transformaciones.",
-        "✨ No busques perfección, busca simplemente completar.",
-        "🧠 Romper una gran tarea en micro-pasos elimina la procrastinación.",
-        "🏋️ Regla del mínimo: Hacer 1 minuto de ejercicio es 100% mejor que hacer 0 minutos.",
-        "🏃 Vence la inercia: ¿Paciencia o pereza? Ponte solo las zapatillas. Tu cerebro completará el resto.",
-        "🎯 Enfoque único: Realizar una sola micro-tarea vence al caos y al estrés de la multitarea.",
-        "⚡ Disciplina sobre talento: La constancia diaria en pequeños pasos supera la intensidad de un solo día.",
-        "✨ Progreso, no perfección: Un resultado imperfecto hecho hoy vale más que una idea perfecta jamás empezada.",
-        "🧠 Micro-pasos anti-procrastinación: Desglosa una tarea gigante en un paso ridículamente pequeño."
+        "🏆 Los pequeños avances invisibles crean grandes transformaciones."
     ];
 
     let currentTipIndex = 0;
-
-    // Rotador de Frases / Trucos cada 5 segundos
-    function startTipRotator() {
-        setInterval(() => {
-            const banner = document.getElementById('tip-banner');
+    setInterval(() => {
+        const banner = document.getElementById('tip-banner');
+        if (banner) {
             banner.classList.add('fade-out');
             setTimeout(() => {
                 currentTipIndex = (currentTipIndex + 1) % tipsList.length;
                 banner.innerText = tipsList[currentTipIndex];
                 banner.classList.remove('fade-out');
             }, 400);
-        }, 5000);
-    }
-    startTipRotator();
+        }
+    }, 5000);
 
     const petEvolution = {
         dog: [
@@ -549,29 +530,7 @@
         ]
     };
 
-    const syncDot = document.getElementById('sync-dot');
-    const syncText = document.getElementById('sync-text');
-    const syncTime = document.getElementById('sync-time');
-
-    onSnapshot(collection(db, "tasks"), (snapshot) => {
-        tasks = [];
-        snapshot.forEach((docSnap) => {
-            tasks.push({ id: docSnap.id, ...docSnap.data() });
-        });
-
-        syncDot.className = "sync-dot connected";
-        syncText.innerText = "Sincronizado con Firebase";
-        const now = new Date();
-        syncTime.innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-
-        window.loadTask();
-        window.renderManagerList();
-    }, (error) => {
-        console.error("Error en tiempo real:", error);
-        syncDot.className = "sync-dot error";
-        syncText.innerText = "Error de conexión";
-    });
-
+    // Declaración de funciones globales para la interfaz
     window.loadTask = function() {
         let filtered = tasks.filter(t => {
             const matchesMode = t.mode === currentMode;
@@ -584,17 +543,17 @@
 
         if (filtered.length === 0) {
             document.getElementById('task-title').innerText = "Sin tareas disponibles";
-            document.getElementById('task-desc').innerText = "Ajusta los filtros de tiempo/categoría o crea nuevas tareas.";
+            document.getElementById('task-desc').innerText = "Haz clic en '🚀 Cargar todas las tareas nuevas de golpe' para importar tus tareas.";
             document.getElementById('task-time').innerText = "-- min";
             document.getElementById('task-cat').innerText = "General";
             document.getElementById('task-last').innerText = "N/A";
             currentTask = null;
-            btnComplete.disabled = true;
+            if (btnComplete) btnComplete.disabled = true;
             window.setupTimerForTask();
             return;
         }
 
-        btnComplete.disabled = false;
+        if (btnComplete) btnComplete.disabled = false;
 
         if (currentMode === 'heavy') {
             filtered.sort((a, b) => {
@@ -623,7 +582,6 @@
         window.setupTimerForTask();
     };
 
-    /* Lógica del Temporizador */
     window.setupTimerForTask = function() {
         clearInterval(timerInterval);
         isTimerRunning = false;
@@ -643,8 +601,7 @@
     function updateTimerDisplay() {
         const mins = Math.floor(timeLeftSeconds / 60);
         const secs = timeLeftSeconds % 60;
-        const formatted = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-        document.getElementById('timer-display').innerText = formatted;
+        document.getElementById('timer-display').innerText = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
     }
 
     window.toggleTimer = function() {
@@ -664,7 +621,7 @@
                     clearInterval(timerInterval);
                     isTimerRunning = false;
                     startBtn.innerText = "▶️ Iniciar";
-                    alert("⏰ ¡Tiempo completado! Gran trabajo en esta tarea exigente.");
+                    alert("⏰ ¡Tiempo completado!");
                 }
             }, 1000);
         }
@@ -673,11 +630,7 @@
     window.resetTimer = function() {
         clearInterval(timerInterval);
         isTimerRunning = false;
-        if (currentTask) {
-            timeLeftSeconds = (parseInt(currentTask.minutes) || 15) * 60;
-        } else {
-            timeLeftSeconds = 0;
-        }
+        timeLeftSeconds = currentTask ? (parseInt(currentTask.minutes) || 15) * 60 : 0;
         updateTimerDisplay();
         document.getElementById('btn-timer-start').innerText = "▶️ Iniciar";
     };
@@ -698,9 +651,7 @@
 
         if (!title || !desc || isNaN(minutes)) return alert("Completa todos los datos de la tarea.");
 
-        await addDoc(collection(db, "tasks"), { 
-            title, desc, minutes, cat, mode, lastCompleted: null 
-        });
+        await addDoc(collection(db, "tasks"), { title, desc, minutes, cat, mode, lastCompleted: null });
 
         document.getElementById('new-title').value = '';
         document.getElementById('new-desc').value = '';
@@ -710,35 +661,31 @@
 
     window.completeTask = async function() {
         if (!currentTask) return;
-        
         completedToday++;
         document.getElementById('completed').innerText = completedToday;
         updatePetProgress();
 
-        const taskRef = doc(db, "tasks", currentTask.id);
-        await updateDoc(taskRef, {
+        await updateDoc(doc(db, "tasks", currentTask.id), {
             lastCompleted: new Date().toISOString()
         });
-
         window.loadTask();
     };
 
     window.deleteCurrentTask = async function() {
         if (!currentTask) return;
-        if (confirm(`¿Seguro que deseas eliminar "${currentTask.title}"?`)) {
+        if (confirm(`¿Eliminar "${currentTask.title}"?`)) {
             await deleteDoc(doc(db, "tasks", currentTask.id));
         }
     };
 
     window.deleteTaskById = async function(id) {
-        if (confirm("¿Seguro que deseas eliminar esta tarea?")) {
+        if (confirm("¿Eliminar esta tarea?")) {
             await deleteDoc(doc(db, "tasks", id));
         }
     };
 
     window.openEditModalCurrent = function() {
-        if (!currentTask) return;
-        window.openEditModalById(currentTask.id);
+        if (currentTask) window.openEditModalById(currentTask.id);
     };
 
     window.openEditModalById = function(id) {
@@ -768,23 +715,16 @@
 
         if (!id || !title || !desc || isNaN(minutes)) return alert("Datos inválidos.");
 
-        const taskRef = doc(db, "tasks", id);
-        await updateDoc(taskRef, { title, desc, minutes, cat, mode });
-        
+        await updateDoc(doc(db, "tasks", id), { title, desc, minutes, cat, mode });
         window.closeEditModal();
     };
 
-    /* Lógica Mascota / Evolución */
     function updatePetProgress() {
-        const goal = 5; // 5 tareas para 100%
-        const percentage = Math.min(Math.round((completedToday / goal) * 100), 100);
+        const percentage = Math.min(Math.round((completedToday / 5) * 100), 100);
         document.getElementById('progress-fill').style.width = percentage + '%';
         document.getElementById('progress-text').innerText = `Progreso hoy: ${percentage}%`;
 
-        let stageIndex = 0;
-        if (percentage >= 100) stageIndex = 2;
-        else if (percentage >= 50) stageIndex = 1;
-
+        let stageIndex = percentage >= 100 ? 2 : (percentage >= 50 ? 1 : 0);
         const stageData = petEvolution[currentPetType][stageIndex];
         document.getElementById('pet-avatar').innerText = stageData.icon;
         document.getElementById('pet-name').innerText = stageData.name;
@@ -798,29 +738,22 @@
         updatePetProgress();
     };
 
-    /* Modales y Formularios */
     window.toggleAddForm = function() {
         const form = document.getElementById('add-form');
         form.style.display = form.style.display === 'flex' ? 'none' : 'flex';
     };
 
-    window.openOnboardingModal = function() {
-        document.getElementById('onboarding-modal').style.display = 'flex';
-    };
+    window.openOnboardingModal = function() { document.getElementById('onboarding-modal').style.display = 'flex'; };
 
     window.applyOnboardingFilters = function() {
         const timeVal = parseInt(document.getElementById('onboarding-time').value);
         if (!isNaN(timeVal) && timeVal > 0) maxTimeAvailable = timeVal;
 
         const checkedCats = [];
-        document.querySelectorAll('#onboarding-categories input:checked').forEach(cb => {
-            checkedCats.push(cb.value);
-        });
+        document.querySelectorAll('#onboarding-categories input:checked').forEach(cb => checkedCats.push(cb.value));
         selectedCategories = checkedCats;
 
-        const modeVal = document.getElementById('onboarding-mode').value;
-        window.setMode(modeVal);
-
+        window.setMode(document.getElementById('onboarding-mode').value);
         document.getElementById('onboarding-modal').style.display = 'none';
     };
 
@@ -829,20 +762,16 @@
         window.renderManagerList();
     };
 
-    window.closeManagerModal = function() {
-        document.getElementById('manager-modal').style.display = 'none';
-    };
+    window.closeManagerModal = function() { document.getElementById('manager-modal').style.display = 'none'; };
 
     window.renderManagerList = function() {
         const container = document.getElementById('manager-list');
         const query = (document.getElementById('manager-search')?.value || '').toLowerCase();
-        
         container.innerHTML = '';
         
         const filtered = tasks.filter(t => t.title.toLowerCase().includes(query));
-        
         if (filtered.length === 0) {
-            container.innerHTML = '<div style="font-size:0.8rem; color:var(--text-dim); text-align:center;">No se encontraron tareas.</div>';
+            container.innerHTML = '<div style="font-size:0.8rem; color:var(--text-dim); text-align:center;">No hay tareas.</div>';
             return;
         }
 
@@ -863,17 +792,14 @@
         });
     };
 
-    /* Modo Claro / Oscuro */
     window.toggleTheme = function() {
         document.body.classList.toggle('light-theme');
-        const isLight = document.body.classList.contains('light-theme');
-        document.getElementById('theme-icon').innerText = isLight ? '☀️' : '🌙';
+        document.getElementById('theme-icon').innerText = document.body.classList.contains('light-theme') ? '☀️' : '🌙';
     };
 
-    /* Función de Carga Masiva */
+    // Función de Importación Masiva
     window.importAllTasks = async function() {
         const newTasksList = [
-            // Hogar y Rutina
             { title: "🛏️ Cambiar sábanas", desc: "Quita las sábanas usadas de la cama y coloca un juego limpio.", minutes: 15, cat: "Hogar y Rutina", mode: "heavy", lastCompleted: null },
             { title: "🧺 Cambiar toallas", desc: "Sustituye las toallas del baño por un juego limpio y lleva las usadas a lavar.", minutes: 3, cat: "Hogar y Rutina", mode: "micro", lastCompleted: null },
             { title: "🔌 Limpiar interruptores", desc: "Pasa un trapo húmedo por los interruptores y enchufes de la casa.", minutes: 5, cat: "Hogar y Rutina", mode: "micro", lastCompleted: null },
@@ -891,8 +817,6 @@
             { title: "🥫 Revisar despensa", desc: "Ordena los estantes y comprueba las fechas de caducidad de latas y paquetes.", minutes: 15, cat: "Hogar y Rutina", mode: "heavy", lastCompleted: null },
             { title: "🧊 Tirar 3 cosas de la nevera", desc: "Revisa los estantes del frigorífico y desecha 3 productos caducados o en mal estado.", minutes: 2, cat: "Hogar y Rutina", mode: "micro", lastCompleted: null },
             { title: "📦 Tirar 3 cosas de la despensa", desc: "Localiza y tira 3 envases vacíos, caducados o abiertos desde hace mucho.", minutes: 2, cat: "Hogar y Rutina", mode: "micro", lastCompleted: null },
-
-            // Productividad y Enfoque
             { title: "📲 Añadir tareas a la app", desc: "Registra las nuevas tareas pendientes dentro de No more Guarris.", minutes: 5, cat: "Productividad y Enfoque", mode: "micro", lastCompleted: null }
         ];
 
@@ -901,13 +825,38 @@
                 for (const task of newTasksList) {
                     await addDoc(collection(db, "tasks"), task);
                 }
-                alert("¡Todas las tareas han sido subidas con éxito a Firebase!");
+                alert("¡Todas las tareas se han subido correctamente!");
             } catch (error) {
                 console.error("Error al importar las tareas:", error);
-                alert("Hubo un error al guardar las tareas. Revisa la consola.");
+                alert("Ocurrió un error al guardar las tareas.");
             }
         }
     };
+
+    // Listener de Firebase Firestore en tiempo real
+    onSnapshot(collection(db, "tasks"), (snapshot) => {
+        tasks = [];
+        snapshot.forEach((docSnap) => {
+            tasks.push({ id: docSnap.id, ...docSnap.data() });
+        });
+
+        const syncDot = document.getElementById('sync-dot');
+        const syncText = document.getElementById('sync-text');
+        const syncTime = document.getElementById('sync-time');
+
+        if (syncDot) syncDot.className = "sync-dot connected";
+        if (syncText) syncText.innerText = "Sincronizado con Firebase";
+        if (syncTime) syncTime.innerText = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+        window.loadTask();
+        window.renderManagerList();
+    }, (error) => {
+        console.error("Error en tiempo real:", error);
+        const syncDot = document.getElementById('sync-dot');
+        const syncText = document.getElementById('sync-text');
+        if (syncDot) syncDot.className = "sync-dot error";
+        if (syncText) syncText.innerText = "Error de conexión";
+    });
 </script>
 </body>
 </html>
