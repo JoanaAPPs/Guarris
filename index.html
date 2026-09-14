@@ -493,17 +493,16 @@
         "🧠 Regla de los 5 segundos: Cuenta 5, 4, 3, 2, 1 y ¡a moverse!",
         "⚡ La constancia diaria vence al talento indisciplinado.",
         "🌱 Cuidar de tu mascota en No more Guarris es cuidar de tu tiempo.",
-        "⏱️ La técnica Pomodoro te protege del agotamiento mental, y una cervecita más aún.",
+        "⏱️ La técnica Pomodoro te protege del agotamiento mental.",
         "🏆 Los pequeños avances invisibles crean grandes transformaciones.",
         "✨ No busques perfección, busca simplemente completar.",
-        "🧠 Romper una gran tarea en micro-pasos elimina la procrastinación."
-	"🏋️ Regla del mínimo: Hacer 1 minuto de ejercicio es 100% mejor que hacer 0 minutos."
-	"🏃 Vence la inercia: ¿Paciencia o pereza? Ponte solo las zapatillas. Tu cerebro completará el resto."
-	"🎯 Enfoque único: Realizar una sola micro-tarea vence al caos y al estrés de la multitarea."
-	"⚡ Disciplina sobre talento: La constancia diaria en pequeños pasos supera la intensidad de un solo día."
-	"✨ Progreso, no perfección: Un resultado imperfecto hecho hoy vale más que una idea perfecta jamás empezada."
-	"🧠 Micro-pasos anti-procrastinación: Desglosa una tarea gigante en un paso ridículamente pequeño."
-
+        "🧠 Romper una gran tarea en micro-pasos elimina la procrastinación.",
+        "🏋️ Regla del mínimo: Hacer 1 minuto de ejercicio es 100% mejor que hacer 0 minutos.",
+        "🏃 Vence la inercia: ¿Paciencia o pereza? Ponte solo las zapatillas. Tu cerebro completará el resto.",
+        "🎯 Enfoque único: Realizar una sola micro-tarea vence al caos y al estrés de la multitarea.",
+        "⚡ Disciplina sobre talento: La constancia diaria en pequeños pasos supera la intensidad de un solo día.",
+        "✨ Progreso, no perfección: Un resultado imperfecto hecho hoy vale más que una idea perfecta jamás empezada.",
+        "🧠 Micro-pasos anti-procrastinación: Desglosa una tarea gigante en un paso ridículamente pequeño."
     ];
 
     let currentTipIndex = 0;
@@ -520,6 +519,7 @@
             }, 400);
         }, 5000);
     }
+    startTipRotator();
 
     const petEvolution = {
         dog: [
@@ -691,7 +691,7 @@
         const cat = document.getElementById('new-cat').value;
         const mode = document.getElementById('new-mode').value;
 
-        if (!title || !desc || isNaN(minutes)) return alert("Completa los datos de la tarea.");
+        if (!title || !desc || isNaN(minutes)) return alert("Completa todos los datos de la tarea.");
 
         await addDoc(collection(db, "tasks"), { 
             title, desc, minutes, cat, mode, lastCompleted: null 
@@ -701,6 +701,34 @@
         document.getElementById('new-desc').value = '';
         document.getElementById('new-time').value = '';
         window.toggleAddForm();
+    };
+
+    window.completeTask = async function() {
+        if (!currentTask) return;
+        
+        completedToday++;
+        document.getElementById('completed').innerText = completedToday;
+        updatePetProgress();
+
+        const taskRef = doc(db, "tasks", currentTask.id);
+        await updateDoc(taskRef, {
+            lastCompleted: new Date().toISOString()
+        });
+
+        window.loadTask();
+    };
+
+    window.deleteCurrentTask = async function() {
+        if (!currentTask) return;
+        if (confirm(`¿Seguro que deseas eliminar "${currentTask.title}"?`)) {
+            await deleteDoc(doc(db, "tasks", currentTask.id));
+        }
+    };
+
+    window.deleteTaskById = async function(id) {
+        if (confirm("¿Seguro que deseas eliminar esta tarea?")) {
+            await deleteDoc(doc(db, "tasks", id));
+        }
     };
 
     window.openEditModalCurrent = function() {
@@ -733,102 +761,39 @@
         const cat = document.getElementById('edit-cat').value;
         const mode = document.getElementById('edit-mode').value;
 
-        if (!id || !title || !desc || isNaN(minutes)) return;
+        if (!id || !title || !desc || isNaN(minutes)) return alert("Datos inválidos.");
 
         const taskRef = doc(db, "tasks", id);
         await updateDoc(taskRef, { title, desc, minutes, cat, mode });
+        
         window.closeEditModal();
     };
 
-    window.deleteTaskById = async function(id) {
-        const task = tasks.find(t => t.id === id);
-        if (task && confirm(`¿Eliminar la tarea "${task.title}"?`)) {
-            await deleteDoc(doc(db, "tasks", id));
-        }
-    };
-
-    window.deleteCurrentTask = function() {
-        if (!currentTask) return;
-        window.deleteTaskById(currentTask.id);
-    };
-
-    window.completeTask = async function() {
-        if (!currentTask) return;
-
-        window.resetTimer();
-        const taskRef = doc(db, "tasks", currentTask.id);
-        const todayIso = new Date().toISOString();
-        await updateDoc(taskRef, { lastCompleted: todayIso });
-
-        completedToday++;
-        document.getElementById('completed').innerText = completedToday;
-        updatePetProgression();
-        window.loadTask();
-    };
-
-    window.renderManagerList = function() {
-        const searchVal = document.getElementById('manager-search').value.toLowerCase();
-        const listContainer = document.getElementById('manager-list');
-        listContainer.innerHTML = '';
-
-        const searchedTasks = tasks.filter(t => t.title.toLowerCase().includes(searchVal));
-
-        if (searchedTasks.length === 0) {
-            listContainer.innerHTML = '<div style="font-size:0.8rem; color:var(--text-dim); text-align:center;">No hay tareas registradas.</div>';
-            return;
-        }
-
-        searchedTasks.forEach(t => {
-            const div = document.createElement('div');
-            div.className = 'task-item-card';
-            div.innerHTML = `
-                <div class="task-item-info">
-                    <strong>${t.title}</strong>
-                    <span style="color:var(--text-dim); font-size:0.75rem;">${t.minutes} min | ${t.cat} | ${t.mode === 'micro' ? 'Micro' : 'Exigente'}</span>
-                </div>
-                <div class="task-item-actions">
-                    <button class="btn-small" onclick="window.openEditModalById('${t.id}')">✏️</button>
-                    <button class="btn-small btn-danger" onclick="window.deleteTaskById('${t.id}')">🗑️</button>
-                </div>
-            `;
-            listContainer.appendChild(div);
-        });
-    };
-
-    window.openManagerModal = function() {
-        window.renderManagerList();
-        document.getElementById('manager-modal').style.display = 'flex';
-    };
-
-    window.closeManagerModal = function() {
-        document.getElementById('manager-modal').style.display = 'none';
-    };
-
-    window.selectPetType = function(type) {
-        currentPetType = type;
-        ['dog', 'cat', 'plant', 'wine'].forEach(p => {
-            document.getElementById(`btn-${p}`).className = 'btn-pet' + (p === type ? ' active' : '');
-        });
-        updatePetProgression();
-    };
-
-    function updatePetProgression() {
-        const target = 4;
-        const percentage = Math.min(Math.round((completedToday / target) * 100), 100);
-        
+    /* Lógica Mascota / Evolución */
+    function updatePetProgress() {
+        const goal = 5; // 5 tareas para 100%
+        const percentage = Math.min(Math.round((completedToday / goal) * 100), 100);
         document.getElementById('progress-fill').style.width = percentage + '%';
         document.getElementById('progress-text').innerText = `Progreso hoy: ${percentage}%`;
 
-        let phaseIndex = 0;
-        if (percentage >= 100) phaseIndex = 2;
-        else if (percentage >= 50) phaseIndex = 1;
+        let stageIndex = 0;
+        if (percentage >= 100) stageIndex = 2;
+        else if (percentage >= 50) stageIndex = 1;
 
-        const stage = petEvolution[currentPetType][phaseIndex];
-        document.getElementById('pet-avatar').innerText = stage.icon;
-        document.getElementById('pet-name').innerText = stage.name;
-        document.getElementById('pet-level').innerText = stage.level;
+        const stageData = petEvolution[currentPetType][stageIndex];
+        document.getElementById('pet-avatar').innerText = stageData.icon;
+        document.getElementById('pet-name').innerText = stageData.name;
+        document.getElementById('pet-level').innerText = stageData.level;
     }
 
+    window.selectPetType = function(type) {
+        currentPetType = type;
+        document.querySelectorAll('.btn-pet').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(`btn-${type}`).classList.add('active');
+        updatePetProgress();
+    };
+
+    /* Modales y Formularios */
     window.toggleAddForm = function() {
         const form = document.getElementById('add-form');
         form.style.display = form.style.display === 'flex' ? 'none' : 'flex';
@@ -839,51 +804,66 @@
     };
 
     window.applyOnboardingFilters = function() {
-        const timeInput = parseInt(document.getElementById('onboarding-time').value);
-        if (!isNaN(timeInput) && timeInput > 0) {
-            maxTimeAvailable = timeInput;
-        }
+        const timeVal = parseInt(document.getElementById('onboarding-time').value);
+        if (!isNaN(timeVal) && timeVal > 0) maxTimeAvailable = timeVal;
 
-        const checkedBoxes = document.querySelectorAll('#onboarding-categories input[type="checkbox"]:checked');
-        selectedCategories = Array.from(checkedBoxes).map(cb => cb.value);
+        const checkedCats = [];
+        document.querySelectorAll('#onboarding-categories input:checked').forEach(cb => {
+            checkedCats.push(cb.value);
+        });
+        selectedCategories = checkedCats;
 
-        if (selectedCategories.length === 0) {
-            alert("Por favor selecciona al menos una categoría.");
-            return;
-        }
+        const modeVal = document.getElementById('onboarding-mode').value;
+        window.setMode(modeVal);
 
-        const modeInput = document.getElementById('onboarding-mode').value;
-        window.setMode(modeInput);
         document.getElementById('onboarding-modal').style.display = 'none';
     };
 
-    window.addEventListener('DOMContentLoaded', () => {
-        startTipRotator();
-        window.openOnboardingModal();
-    });
-</script>
+    window.openManagerModal = function() {
+        document.getElementById('manager-modal').style.display = 'flex';
+        window.renderManagerList();
+    };
 
-<script>
-    function toggleTheme() {
-        const body = document.body;
-        const icon = document.getElementById('theme-icon');
-        body.classList.toggle('light-theme');
+    window.closeManagerModal = function() {
+        document.getElementById('manager-modal').style.display = 'none';
+    };
 
-        if (body.classList.contains('light-theme')) {
-            icon.innerText = '☀️';
-            localStorage.setItem('oshikan_theme', 'light');
-        } else {
-            icon.innerText = '🌙';
-            localStorage.setItem('oshikan_theme', 'dark');
+    window.renderManagerList = function() {
+        const container = document.getElementById('manager-list');
+        const query = (document.getElementById('manager-search')?.value || '').toLowerCase();
+        
+        container.innerHTML = '';
+        
+        const filtered = tasks.filter(t => t.title.toLowerCase().includes(query));
+        
+        if (filtered.length === 0) {
+            container.innerHTML = '<div style="font-size:0.8rem; color:var(--text-dim); text-align:center;">No se encontraron tareas.</div>';
+            return;
         }
-    }
 
-    if (localStorage.getItem('oshikan_theme') === 'light') {
-        document.body.classList.add('light-theme');
-        document.getElementById('theme-icon').innerText = '☀️';
-    }
+        filtered.forEach(t => {
+            const card = document.createElement('div');
+            card.className = 'task-item-card';
+            card.innerHTML = `
+                <div class="task-item-info">
+                    <strong>${t.title}</strong>
+                    <span style="color: var(--text-dim); font-size: 0.7rem;">${t.minutes} min | ${t.cat || 'General'} | ${t.mode === 'heavy' ? 'Exigente' : 'Micro'}</span>
+                </div>
+                <div class="task-item-actions">
+                    <button class="btn-small" onclick="openEditModalById('${t.id}')">✏️</button>
+                    <button class="btn-small btn-danger" onclick="deleteTaskById('${t.id}')">🗑️</button>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    };
+
+    /* Modo Claro / Oscuro */
+    window.toggleTheme = function() {
+        document.body.classList.toggle('light-theme');
+        const isLight = document.body.classList.contains('light-theme');
+        document.getElementById('theme-icon').innerText = isLight ? '☀️' : '🌙';
+    };
 </script>
 </body>
 </html>
-
-```
